@@ -3,32 +3,67 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Email Automation (Mock Demo)</title>
+  <meta http-equiv="refresh" content="4; url=demo.html" />
+  <title>Viriathus Email Automation</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #0b1020; color: #e8ecff; }
-    .wrap { max-width: 900px; margin: 48px auto; padding: 24px; }
-    .card { background: #141b34; border: 1px solid #2b3768; border-radius: 12px; padding: 24px; }
-    h1 { margin-top: 0; }
-    a { color: #8bb0ff; }
-    code { background: #1d2647; padding: 2px 6px; border-radius: 6px; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #081120 0%, #0d1730 100%);
+      color: #e8eefc;
+      padding: 24px;
+    }
+
+    .card {
+      max-width: 760px;
+      padding: 32px;
+      border-radius: 18px;
+      background: rgba(17, 27, 49, 0.96);
+      border: 1px solid #2d4068;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      text-align: center;
+    }
+
+    h1 { margin: 0 0 12px; font-size: clamp(2rem, 5vw, 3rem); }
+    p { margin: 0 0 14px; line-height: 1.6; color: #b9c8e8; }
+
+    .cta {
+      display: inline-block;
+      margin: 12px 0 18px;
+      padding: 14px 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #6c9fff, #7fe1ff);
+      color: #04101f;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .tiny { font-size: 0.92rem; color: #96acd6; }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <section class="card">
-      <h1>Email Automation — Public Mock Demo</h1>
-      <p>This repository contains sanitized mock modules for a Google Apps Script email automation project.</p>
-      <p>Included modules are safe for public sharing and documentation/demo purposes only.</p>
-      <ul>
-        <li><code>Code.gs</code></li>
-        <li><code>Index.html</code></li>
-        <li><code>CSS.html</code></li>
-        <li><code>JS.html</code></li>
-        <li><code>appsscript.json</code> (if provided)</li>
-      </ul>
-      <p>Served via jsDelivr from the <code>main</code> branch.</p>
-    </section>
+  <main class="card">
+    <h1>Viriathus Email Automation</h1>
+    <p>This landing page now points to a fully static, self-contained interactive demo that showcases template-driven email generation with mock data.</p>
+    <a class="cta" href="demo.html">Open Live Interactive Demo</a>
+    <p id="countdown" class="tiny">Redirecting automatically in 4 seconds…</p>
   </main>
+
+  <script>
+    let remaining = 4;
+    const countdown = document.getElementById('countdown');
+    const timer = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(timer);
+        window.location.href = 'demo.html';
+        return;
+      }
+      countdown.textContent = 'Redirecting automatically in ' + remaining + ' second' + (remaining === 1 ? '' : 's') + '…';
+    }, 1000);
+  </script>
 </body>
 </html>
-

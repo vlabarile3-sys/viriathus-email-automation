@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Viriathus Email Automation Demo</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #081120;
+      --panel: #111b31;
+      --panel-2: #182643;
+      --border: #2d4068;
+      --text: #e8eefc;
+      --muted: #9cb0d9;
+      --accent: #71a7ff;
+      --accent-2: #9bf3d0;
+      --danger: #ff9b9b;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #081120 0%, #0d1730 100%);
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .hero,
+    .panel {
+      background: rgba(17, 27, 49, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 28px;
+      margin-bottom: 20px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .eyebrow {
+      color: var(--accent-2);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); }
+    .subtitle { color: var(--muted); line-height: 1.5; max-width: 820px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .stat {
+      padding: 14px;
+      border-radius: 14px;
+      background: var(--panel-2);
+      border: 1px solid rgba(113, 167, 255, 0.2);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 440px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel { padding: 22px; }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .section-title p { color: var(--muted); font-size: 0.95rem; }
+
+    .field-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      font: inherit;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 13px;
+      background: #0b1427;
+      color: var(--text);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 98px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(113, 167, 255, 0.18);
+    }
+
+    .chip-row,
+    .button-row,
+    .preview-meta,
+    .validation-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip,
+    .ghost,
+    .primary {
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, border-color 0.15s ease;
+    }
+
+    .chip {
+      padding: 8px 10px;
+      background: rgba(113, 167, 255, 0.12);
+      color: #cae0ff;
+      border: 1px solid rgba(113, 167, 255, 0.32);
+    }
+
+    .primary,
+    .ghost {
+      padding: 11px 14px;
+      font-weight: bold;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #6c9fff, #7fe1ff);
+      color: #04101f;
+      border: none;
+    }
+
+    .ghost {
+      background: transparent;
+      color: var(--text);
+    }
+
+    .chip:hover,
+    .ghost:hover,
+    .primary:hover { transform: translateY(-1px); }
+
+    .helper {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .status {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(113, 167, 255, 0.08);
+      border: 1px solid rgba(113, 167, 255, 0.18);
+      color: #d7e6ff;
+    }
+
+    .status.warn {
+      background: rgba(255, 155, 155, 0.08);
+      border-color: rgba(255, 155, 155, 0.26);
+      color: #ffd6d6;
+    }
+
+    .preview-card {
+      display: grid;
+      gap: 16px;
+    }
+
+    .email-shell {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #0b1427;
+    }
+
+    .email-head,
+    .email-body,
+    .plain-preview {
+      padding: 16px;
+    }
+
+    .email-head {
+      background: #101a30;
+      display: grid;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta-line {
+      display: grid;
+      grid-template-columns: 66px 1fr;
+      gap: 12px;
+      align-items: start;
+      color: var(--muted);
+    }
+
+    .meta-line span:last-child { color: var(--text); word-break: break-word; }
+
+    .email-body {
+      background: #ffffff;
+      color: #162236;
+      min-height: 230px;
+      line-height: 1.6;
+    }
+
+    .plain-preview {
+      background: #0f1930;
+      border-top: 1px solid var(--border);
+    }
+
+    .plain-preview pre {
+      margin: 10px 0 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #cfe0ff;
+      font-family: Consolas, monospace;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(155, 243, 208, 0.1);
+      border: 1px solid rgba(155, 243, 208, 0.24);
+      color: #c9ffeb;
+      font-size: 0.9rem;
+    }
+
+    .validation-list { margin-top: 12px; }
+
+    .validation-item {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(113, 167, 255, 0.1);
+      border: 1px solid rgba(113, 167, 255, 0.18);
+      font-size: 0.88rem;
+      color: #d7e6ff;
+    }
+
+    .validation-item.warn {
+      background: rgba(255, 155, 155, 0.1);
+      border-color: rgba(255, 155, 155, 0.22);
+      color: #ffd4d4;
+    }
+
+    a { color: #1a4f96; }
+
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .field-row { grid-template-columns: 1fr; }
+      .page { padding: 20px 14px 34px; }
+      .hero, .panel { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <span class="eyebrow">Static portfolio demo</span>
+      <h1>Mock email automation preview</h1>
+      <p class="subtitle">This standalone page recreates the Apps Script concept with local-only data: select a workflow, load a saved template, insert placeholders, and generate a formatted email preview that standardizes wording and reduces typo-prone manual edits.</p>
+      <div class="stats">
+        <div class="stat"><strong>2 workflows</strong><span>Mock teams populated from local data</span></div>
+        <div class="stat"><strong>4 placeholders</strong><span>{{AGENT_ID}}, {{AGENT_NAME}}, {{DATE}}, {{FILE_URL}}</span></div>
+        <div class="stat"><strong>0 backend calls</strong><span>Everything runs in-browser with inline CSS and JS</span></div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <section class="panel">
+        <div class="section-title">
+          <div>
+            <h2>Template builder</h2>
+            <p>Use the mock controls below to generate a structured email.</p>
+          </div>
+          <span class="badge">Apps Script concept, static UX</span>
+        </div>
+
+        <div class="field-grid">
+          <div class="field-row">
+            <label>
+              Template
+              <select id="templateSelect"></select>
+            </label>
+            <label>
+              Workflow
+              <select id="workflowSelect"></select>
+            </label>
+          </div>
+
+          <div class="field-row">
+            <label>
+              Recipient
+              <select id="agentSelect"></select>
+            </label>
+            <label>
+              Event date
+              <input id="dateInput" type="date" />
+            </label>
+          </div>
+
+          <label>
+            CC emails
+            <input id="ccInput" type="text" placeholder="opslead@example.com, qa@example.com" />
+          </label>
+
+          <label>
+            Mock file URL
+            <input id="fileUrlInput" type="url" placeholder="https://example.com/mock-plan/A-102" />
+          </label>
+
+          <label>
+            Subject template
+            <input id="subjectInput" type="text" />
+          </label>
+
+          <label>
+            Body template (HTML allowed)
+            <textarea id="bodyInput"></textarea>
+          </label>
+
+          <div>
+            <p class="helper">Click a placeholder to insert it into the last focused template field.</p>
+            <div class="chip-row" id="placeholderChips"></div>
+          </div>
+
+          <div class="button-row">
+            <button class="primary" id="generateBtn" type="button">Generate Email</button>
+            <button class="ghost" id="randomBtn" type="button">Random Recipient</button>
+            <button class="ghost" id="resetBtn" type="button">Reset Template</button>
+          </div>
+        </div>
+
+        <div id="statusBox" class="status">Ready. Load a template or edit the fields, then click <strong>Generate Email</strong>.</div>
+      </section>
+
+      <section class="panel preview-card">
+        <div class="section-title">
+          <div>
+            <h2>Generated preview</h2>
+            <p>Local rendering of the final email body and validation checks.</p>
+          </div>
+          <span class="badge" id="automationBadge">Template safeguards active</span>
+        </div>
+
+        <div class="preview-meta">
+          <span class="validation-item" id="workflowTag">Workflow: -</span>
+          <span class="validation-item" id="recipientTag">Recipient: -</span>
+          <span class="validation-item" id="templateTag">Template: -</span>
+        </div>
+
+        <div class="email-shell">
+          <div class="email-head">
+            <div class="meta-line"><span>To</span><span id="previewTo">-</span></div>
+            <div class="meta-line"><span>CC</span><span id="previewCc">-</span></div>
+            <div class="meta-line"><span>Subject</span><span id="previewSubject">-</span></div>
+          </div>
+          <div class="email-body" id="previewBody"></div>
+          <div class="plain-preview">
+            <strong>Plain-text snapshot</strong>
+            <pre id="plainTextPreview"></pre>
+          </div>
+        </div>
+
+        <div>
+          <strong>Validation & typo-reduction checks</strong>
+          <div class="validation-list" id="validationList"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const workflows = {
+      MOCK_WORKFLOW_A: [
+        { id: 'A-102', name: 'Ana Pereira', email: 'ana.pereira@example.com' },
+        { id: 'A-118', name: 'Miguel Costa', email: 'miguel.costa@example.com' },
+        { id: 'A-127', name: 'Sofia Martins', email: 'sofia.martins@example.com' }
+      ],
+      MOCK_WORKFLOW_B: [
+        { id: 'B-204', name: 'Tiago Rocha', email: 'tiago.rocha@example.com' },
+        { id: 'B-209', name: 'Rita Santos', email: 'rita.santos@example.com' },
+        { id: 'B-215', name: 'Luis Almeida', email: 'luis.almeida@example.com' }
+      ]
+    };
+
+    const templates = {
+      'Mock Template A': {
+        targetWorkflow: 'MOCK_WORKFLOW_A',
+        ccEmails: 'opslead@example.com, qa.partner@example.com',
+        emailSubject: '{{AGENT_ID}} || Mock Event || {{DATE}}',
+        emailBody: 'Hi Team,<br><br>This is to inform you that <strong>{{AGENT_NAME}}</strong> will be in Mock Event mode on <strong>{{DATE}}</strong>.<br><br>You can access the personalized plan by clicking here: <a href="{{FILE_URL}}">Mock Event File</a>.<br><br>Please let me know if you have any questions or doubts.<br><br>Regards,'
+      },
+      'Coaching Follow-up': {
+        targetWorkflow: 'MOCK_WORKFLOW_B',
+        ccEmails: 'teamlead@example.com, quality.coach@example.com',
+        emailSubject: 'Follow-up || {{AGENT_NAME}} || {{DATE}}',
+        emailBody: 'Hello,<br><br>This is a standardized follow-up for <strong>{{AGENT_NAME}}</strong> (<strong>{{AGENT_ID}}</strong>) scheduled on <strong>{{DATE}}</strong>.<br><br>Reference material: <a href="{{FILE_URL}}">Session notes</a>.<br><br>Regards,'
+      }
+    };
+
+    const placeholderTokens = ['{{AGENT_ID}}', '{{AGENT_NAME}}', '{{DATE}}', '{{FILE_URL}}'];
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const els = {
+      templateSelect: document.getElementById('templateSelect'),
+      workflowSelect: document.getElementById('workflowSelect'),
+      agentSelect: document.getElementById('agentSelect'),
+      dateInput: document.getElementById('dateInput'),
+      ccInput: document.getElementById('ccInput'),
+      fileUrlInput: document.getElementById('fileUrlInput'),
+      subjectInput: document.getElementById('subjectInput'),
+      bodyInput: document.getElementById('bodyInput'),
+      statusBox: document.getElementById('statusBox'),
+      previewTo: document.getElementById('previewTo'),
+      previewCc: document.getElementById('previewCc'),
+      previewSubject: document.getElementById('previewSubject'),
+      previewBody: document.getElementById('previewBody'),
+      plainTextPreview: document.getElementById('plainTextPreview'),
+      validationList: document.getElementById('validationList'),
+      workflowTag: document.getElementById('workflowTag'),
+      recipientTag: document.getElementById('recipientTag'),
+      templateTag: document.getElementById('templateTag'),
+      automationBadge: document.getElementById('automationBadge'),
+      placeholderChips: document.getElementById('placeholderChips'),
+      generateBtn: document.getElementById('generateBtn'),
+      randomBtn: document.getElementById('randomBtn'),
+      resetBtn: document.getElementById('resetBtn')
+    };
+
+    let activeEditor = els.subjectInput;
+
+    function formatDate(value) {
+      if (!value) return '';
+      const [year, month, day] = value.split('-');
+      return [year, month, day].join('/');
+    }
+
+    function parseEmailList(value) {
+      return value
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function escapeHtml(value) {
+      return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderTemplate(text, data) {
+      return text.replace(/{{\s*(AGENT_ID|AGENT_NAME|DATE|FILE_URL)\s*}}/g, (_, key) => data[key] || '');
+    }
+
+    function unresolvedTokens(text) {
+      return Array.from(new Set((text.match(/{{[^}]+}}/g) || [])));
+    }
+
+    function htmlToPlainText(html) {
+      const temp = document.createElement('div');
+      temp.innerHTML = html;
+      return temp.textContent.replace(/\n{3,}/g, '\n\n').trim();
+    }
+
+    function setStatus(message, warn) {
+      els.statusBox.className = warn ? 'status warn' : 'status';
+      els.statusBox.innerHTML = message;
+    }
+
+    function populateTemplateSelect() {
+      els.templateSelect.innerHTML = Object.keys(templates)
+        .map((name) => '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + '</option>')
+        .join('');
+    }
+
+    function populateWorkflowSelect(selected) {
+      els.workflowSelect.innerHTML = Object.keys(workflows)
+        .map((name) => '<option value="' + escapeHtml(name) + '"' + (name === selected ? ' selected' : '') + '>' + escapeHtml(name) + '</option>')
+        .join('');
+    }
+
+    function populateAgentSelect(workflowName, selectedId) {
+      const agents = workflows[workflowName] || [];
+      els.agentSelect.innerHTML = agents
+        .map((agent) => '<option value="' + escapeHtml(agent.id) + '"' + (agent.id === selectedId ? ' selected' : '') + '>' + escapeHtml(agent.name + ' (' + agent.id + ')') + '</option>')
+        .join('');
+    }
+
+    function getSelectedAgent() {
+      const workflowName = els.workflowSelect.value;
+      const agents = workflows[workflowName] || [];
+      return agents.find((agent) => agent.id === els.agentSelect.value) || agents[0] || null;
+    }
+
+    function createDefaultUrl(agentId) {
+      return 'https://example.com/mock-plan/' + agentId.toLowerCase();
+    }
+
+    function loadTemplate(templateName) {
+      const template = templates[templateName];
+      if (!template) return;
+      populateWorkflowSelect(template.targetWorkflow);
+      populateAgentSelect(template.targetWorkflow);
+      const agent = getSelectedAgent();
+      els.ccInput.value = template.ccEmails;
+      els.subjectInput.value = template.emailSubject;
+      els.bodyInput.value = template.emailBody;
+      if (!els.dateInput.value) {
+        els.dateInput.value = new Date().toISOString().slice(0, 10);
+      }
+      if (agent) {
+        els.fileUrlInput.value = createDefaultUrl(agent.id);
+      }
+      updateTags();
+      setStatus('Loaded <strong>' + escapeHtml(templateName) + '</strong>. Edit the values or generate immediately.', false);
+    }
+
+    function updateTags() {
+      const agent = getSelectedAgent();
+      els.workflowTag.textContent = 'Workflow: ' + (els.workflowSelect.value || '-');
+      els.recipientTag.textContent = 'Recipient: ' + (agent ? agent.name + ' (' + agent.id + ')' : '-');
+      els.templateTag.textContent = 'Template: ' + (els.templateSelect.value || '-');
+    }
+
+    function insertAtCursor(field, text) {
+      const start = field.selectionStart || 0;
+      const end = field.selectionEnd || 0;
+      const value = field.value;
+      field.value = value.slice(0, start) + text + value.slice(end);
+      const position = start + text.length;
+      field.focus();
+      field.setSelectionRange(position, position);
+    }
+
+    function buildPlaceholderButtons() {
+      els.placeholderChips.innerHTML = placeholderTokens
+        .map((token) => '<button class="chip" data-token="' + escapeHtml(token) + '" type="button">' + escapeHtml(token) + '</button>')
+        .join('');
+      els.placeholderChips.addEventListener('click', (event) => {
+        const token = event.target.getAttribute('data-token');
+        if (!token) return;
+        insertAtCursor(activeEditor || els.subjectInput, token);
+      });
+    }
+
+    function generateEmail() {
+      const agent = getSelectedAgent();
+      const dateValue = els.dateInput.value;
+      const ccEmails = parseEmailList(els.ccInput.value);
+
+      if (!agent) {
+        setStatus('Select a workflow and recipient before generating the email.', true);
+        return;
+      }
+
+      if (!dateValue) {
+        setStatus('Choose an event date to keep the generated message consistent.', true);
+        return;
+      }
+
+      const data = {
+        AGENT_ID: agent.id,
+        AGENT_NAME: agent.name,
+        DATE: formatDate(dateValue),
+        FILE_URL: els.fileUrlInput.value.trim() || createDefaultUrl(agent.id)
+      };
+
+      const subject = renderTemplate(els.subjectInput.value, data);
+      const body = renderTemplate(els.bodyInput.value, data);
+      const unresolved = unresolvedTokens(subject + ' ' + body);
+      const invalidCc = ccEmails.filter((email) => !emailRegex.test(email));
+      const checks = [
+        { ok: subject.trim().length > 0, label: 'Subject is populated from a reusable template' },
+        { ok: body.includes(agent.name), label: 'Recipient details were inserted automatically' },
+        { ok: invalidCc.length === 0, label: invalidCc.length ? 'Invalid CC removed from automation flow: ' + invalidCc.join(', ') : 'All CC addresses are valid' },
+        { ok: unresolved.length === 0, label: unresolved.length ? 'Unresolved placeholders: ' + unresolved.join(', ') : 'No unresolved placeholders remain' }
+      ];
+
+      els.previewTo.textContent = agent.email;
+      els.previewCc.textContent = ccEmails.length ? ccEmails.join(', ') : 'None';
+      els.previewSubject.textContent = subject;
+      els.previewBody.innerHTML = body;
+      els.plainTextPreview.textContent = htmlToPlainText(body);
+      els.validationList.innerHTML = checks
+        .map((item) => '<span class="validation-item' + (item.ok ? '' : ' warn') + '">' + escapeHtml(item.label) + '</span>')
+        .join('');
+      els.automationBadge.textContent = checks.every((item) => item.ok) ? 'Template safeguards active' : 'Review warnings before sending';
+      updateTags();
+
+      if (checks.every((item) => item.ok)) {
+        setStatus('Generated a standardized draft for <strong>' + escapeHtml(agent.name) + '</strong>. The preview shows how templating reduces manual typing errors.', false);
+      } else {
+        setStatus('Preview created with warnings. Fix the highlighted issues to keep the email consistent.', true);
+      }
+    }
+
+    function randomRecipient() {
+      const workflowName = els.workflowSelect.value;
+      const agents = workflows[workflowName] || [];
+      if (!agents.length) return;
+      const randomAgent = agents[Math.floor(Math.random() * agents.length)];
+      els.agentSelect.value = randomAgent.id;
+      els.fileUrlInput.value = createDefaultUrl(randomAgent.id);
+      updateTags();
+      generateEmail();
+    }
+
+    function resetDemo() {
+      const firstTemplate = Object.keys(templates)[0];
+      els.templateSelect.value = firstTemplate;
+      loadTemplate(firstTemplate);
+      generateEmail();
+    }
+
+    [els.subjectInput, els.bodyInput].forEach((field) => {
+      field.addEventListener('focus', () => { activeEditor = field; });
+      field.addEventListener('click', () => { activeEditor = field; });
+    });
+
+    els.templateSelect.addEventListener('change', () => {
+      loadTemplate(els.templateSelect.value);
+      populateAgentSelect(els.workflowSelect.value);
+      const agent = getSelectedAgent();
+      if (agent) {
+        els.fileUrlInput.value = createDefaultUrl(agent.id);
+      }
+      generateEmail();
+    });
+
+    els.workflowSelect.addEventListener('change', () => {
+      populateAgentSelect(els.workflowSelect.value);
+      const agent = getSelectedAgent();
+      if (agent) {
+        els.fileUrlInput.value = createDefaultUrl(agent.id);
+      }
+      updateTags();
+      generateEmail();
+    });
+
+    els.agentSelect.addEventListener('change', () => {
+      const agent = getSelectedAgent();
+      if (agent && !els.fileUrlInput.value.trim()) {
+        els.fileUrlInput.value = createDefaultUrl(agent.id);
+      }
+      updateTags();
+      generateEmail();
+    });
+
+    [els.ccInput, els.fileUrlInput, els.subjectInput, els.bodyInput, els.dateInput].forEach((field) => {
+      field.addEventListener('input', updateTags);
+    });
+
+    els.generateBtn.addEventListener('click', generateEmail);
+    els.randomBtn.addEventListener('click', randomRecipient);
+    els.resetBtn.addEventListener('click', resetDemo);
+
+    populateTemplateSelect();
+    populateWorkflowSelect('MOCK_WORKFLOW_A');
+    populateAgentSelect('MOCK_WORKFLOW_A');
+    buildPlaceholderButtons();
+    resetDemo();
+  </script>
+</body>
+</html>
